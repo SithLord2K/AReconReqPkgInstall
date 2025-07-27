@@ -1,3 +1,4 @@
+
 import os
 import apt
 import sys
@@ -11,8 +12,8 @@ with open("requiredpackages.txt", "r") as file:
 banner = """
 This script will install the packages required for AutoRecon.
 Written By: Chris Wiley (SithLord2K)
-Twitter/X: @sithlord2k
-LinkedIn: https://www.linkedin.com/in/cw-hacks
+Twitter: @sithlord2k
+LinkedIn: https://www.linkedin.com/in/chris-wiley-007b9585
 Email: sithlord2k@gmail.com
 """                                                                                                                                                                                                              
 
@@ -31,17 +32,20 @@ def main():
     cache = apt.cache.Cache()
     cache.update()
     print("[*] Cache Update Complete.")
-    cache.open(None)
+    cache.open()
 
     #Loop through the list and determine if the package is already installed or needs to be installed.
     for app in required_apps:
-        pkg = cache[app]
-        if pkg.is_installed:
-            print(f"[*] Package {pkg} is already installed.")
+        if app in cache:
+            pkg = cache[app]
+            if not pkg.is_installed:
+                #Flag the packages that need to be installed
+                print(f"[*] Package {pkg} is marked for install.")
+                pkg.mark_install()
+            else:
+                print(f"[*] Package {pkg} is already installed.")
         else:
-            #Flag the packages that need to be installed
-            print(f"[*] Package {pkg} is marked for install.")
-            pkg.mark_install()
+            print(f"[X] Package '{pkg}' not found in cache.")
 
     #Commit the changes to install the packages
     cache.commit()
