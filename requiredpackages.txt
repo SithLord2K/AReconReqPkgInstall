@@ -17,3 +17,4 @@ sslscan
 svwar
 tnscmd10g
 whatweb
+autorecon
